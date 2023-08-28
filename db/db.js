@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 
-const DB_URL = 'mongodb://127.0.0.1:27017/totality-corps';
+const DB_URL = 'mongodb+srv://test:L2QLuGui1Pf6GiRy@cluster0.elbrrf2.mongodb.net/totality-corps-challenges?retryWrites=true&w=majority';
 
 mongoose.connect(DB_URL, {
   useNewUrlParser: true,

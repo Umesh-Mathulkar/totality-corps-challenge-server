@@ -2,22 +2,23 @@ const express = require('express');
 const passport = require('passport');
 const session = require('express-session');
 const authRoutes = require('./routes/authRoutes');
-const bodyParser = require('body-parser');
-const db = require('./db/db'); 
+const cartRoutes = require('./routes/cartRoutes');
+const db = require('./db/db');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const cartRoutes = require('./routes/cartRoutes')
+const compression = require('compression');
+const morgan = require('morgan');
 require('./config/passport');
 const cors = require('cors');
-
-
-
+const MongoStore = require('connect-mongo');
+require('dotenv').config();
 const app = express();
 
-
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(compression());
+app.use(morgan('combined'));
 
 // Use Helmet to set secure HTTP headers
 app.use(helmet());
@@ -29,32 +30,30 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-
-
-
-// Set up session management
-app.use(session({
-  secret: process.env.SECRET_KEY,
-  resave: false,
-  saveUninitialized: true,
-}));
+// Set up session management with connect-mongo
+app.use(
+  session({
+    secret: process.env.SECRET_KEY,
+    resave: false,
+    saveUninitialized: true,
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
+  })
+);
 
 // Set up Passport for authentication
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 app.get('/', (req, res) => {
-  res.send('Welcome to eStore!'); 
+  res.send('Welcome to eStore!');
 });
 
-
 // Set up routes
-// app.use('/', indexRoutes);
 app.use('/auth', authRoutes);
-app.use('/cart',cartRoutes)
+app.use('/cart', cartRoutes);
 
 // Start the server
-app.listen(8080, () => {
-  console.log('Server listening on port 8080');
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
 });

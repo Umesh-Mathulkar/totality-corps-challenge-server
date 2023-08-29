@@ -1,8 +1,9 @@
-// db.js
+
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 
-const DB_URL = 'mongodb+srv://test:L2QLuGui1Pf6GiRy@cluster0.elbrrf2.mongodb.net/totality-corps-challenges?retryWrites=true&w=majority';
+const DB_URL = process.env.MONGO_URI;
 
 mongoose.connect(DB_URL, {
   useNewUrlParser: true,

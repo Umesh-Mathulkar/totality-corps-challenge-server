@@ -34,7 +34,7 @@ app.use(limiter);
 
 // Set up session management
 app.use(session({
-  secret: 'SECRET_KEY',
+  secret: process.env.SECRET_KEY,
   resave: false,
   saveUninitialized: true,
 }));
@@ -42,6 +42,12 @@ app.use(session({
 // Set up Passport for authentication
 app.use(passport.initialize());
 app.use(passport.session());
+
+
+app.get('/', (req, res) => {
+  res.send('Welcome to eStore!'); 
+});
+
 
 // Set up routes
 // app.use('/', indexRoutes);

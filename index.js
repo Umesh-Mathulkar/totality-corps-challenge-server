@@ -22,6 +22,7 @@ app.use(morgan('combined'));
 
 // Use Helmet to set secure HTTP headers
 app.use(helmet());
+app.set('trust proxy', 1);
 
 // Set up rate limiting to prevent brute-force attacks
 const limiter = rateLimit({
